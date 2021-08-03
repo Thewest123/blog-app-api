@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
-
+from django.utils import timezone
 
 UNCATEGORIZED_CATEGORY_ID = 1
 
@@ -21,7 +21,7 @@ class BlogPost(models.Model):
 
     title = models.CharField(max_length=80)
 
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
 
     category = models.ForeignKey(
         'Category',
@@ -41,6 +41,10 @@ class BlogPost(models.Model):
         null=True,
         upload_to=blog_image_file_path,
         blank=True
+    )
+
+    publish_date = models.DateTimeField(
+        default=timezone.now
     )
 
     is_for_logged_users_only = models.BooleanField(
