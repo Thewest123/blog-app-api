@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'core',
     'blog',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
