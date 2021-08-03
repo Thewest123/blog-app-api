@@ -3,10 +3,10 @@ LABEL maintainer="Jan Černý"
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache postgresql-client jpeg-dev
 
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-    gcc musl-dev libc-dev linux-headers postgresql-dev
+    gcc musl-dev libc-dev linux-headers postgresql-dev zlib zlib-dev
 
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
