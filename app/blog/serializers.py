@@ -6,13 +6,13 @@ from blog.models import BlogPost, Category, Tag
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['name', 'slug']
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name', 'slug']
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
