@@ -8,11 +8,16 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+      - webfiles_volume:/vol/web
     command: >
       sh -c "python manage.py wait_for_db &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py migrate --noinput &&
+             python manage.py collectstatic &&
+             gunicorn app.wsgi:application --bind 0.0.0.0:8000"
     environment:
+      - DJANGO_SECRET_KEY=django-insecure-hh7(x*18=az1*kwlp4wxbd((5w6jus@4-t8tknd+g0&x@dfu27
+      - DEBUG=0
+      - DJANGO_ALLOWED_HOSTS=django
       - DB_HOST=db
       - DB_NAME=app
       - DB_USER=postgres
@@ -22,7 +27,22 @@ services:
 
   db:
     image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=app
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - webfiles_volume:/vol/web
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+  webfiles_volume:
