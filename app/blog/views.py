@@ -8,22 +8,31 @@ from blog import serializers
 class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = BlogPost.objects.all()
-    serializer_class = serializers.BlogPostSerializer
     lookup_field = 'slug'
 
+    serializer_classes = {
+        'list': serializers.BlogPostSerializer,
+        'retrieve': serializers.BlogPostDetailSerializer,
+    }
+    default_serializer_class = serializers.BlogPostSerializer
+
     def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return serializers.BlogPostDetailSerializer
-        else:
-            return self.serializer_class
+        """Set the serializer class based on action"""
+        return self.serializer_classes.get(
+            self.action,
+            self.default_serializer_class
+        )
 
     def get_queryset(self):
-        """Filter the results based on query parameters"""
+        """Filter the results based on query parameters and auth"""
         queryset = self.queryset
 
+        # Hide BlogPosts that have is_for_logged_users_only=True
+        # if user is not authenticated
         if not self.request.user.is_authenticated:
             queryset = queryset.exclude(is_for_logged_users_only=True)
 
+        # Get query params and filter the queryset
         author = self.request.query_params.get('author')
         category = self.request.query_params.get('category')
         tags = self.request.query_params.get('tags')
@@ -36,9 +45,9 @@ class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
 
         if tags:
             tags_list = tags.split(',')
-            queryset = queryset.filter(tags__slug__in=tags_list)
+            queryset = queryset.filter(tags__slug__in=tags_list).distinct()
 
-        return queryset.order_by('title').distinct()
+        return queryset.order_by('title')
 
 
 class TagViewSet(viewsets.GenericViewSet,
