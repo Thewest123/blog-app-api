@@ -7,14 +7,14 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name', 'slug']
+        fields = ['name', 'slug']
 
 
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug']
+        fields = ['name', 'slug']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -42,7 +42,5 @@ class BlogPostDetailSerializer(BlogPostSerializer):
 
     class Meta:
         model = BlogPost
-        fields = ['id', 'title', 'slug', 'category', 'tags', 'author',
-                  'content', 'image', 'publish_date',
-                  'is_for_logged_users_only']
+        fields = '__all__'
         lookup_field = 'slug'
