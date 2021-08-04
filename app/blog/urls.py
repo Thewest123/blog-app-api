@@ -5,10 +5,10 @@ from blog import views
 
 
 router = DefaultRouter()
-router.register("tags", views.TagViewSet)
-router.register("categories", views.CategoryViewSet)
 router.register("posts", views.BlogPostViewSet)
 router.register("authors", views.UserViewSet)
+router.register("categories", views.CategoryViewSet)
+router.register("tags", views.TagViewSet)
 
 app_name = "blog"
 
